@@ -1,0 +1,9 @@
+Fri Jun 28 17:36:27 2024: It took 6.250930547714233to scan 5 images
+Fri Jun 28 17:38:18 2024: It took 7.0015082359313965to scan 5 images
+Fri Jun 28 17:38:50 2024: It took 13.93333387374878to scan 25 images
+Fri Jun 28 17:46:06 2024: It took 71.26641702651978to scan 200 images
+Fri Jun 28 17:47:08 2024: It took 4.90616250038147to scan 1 images
+Fri Jun 28 17:50:07 2024: It took 5.030106544494629to scan 2 images
+-- figuring out what process takes the longest
+Fri Jun 28 17:54:54 2024: It took 0.0053327083587646484to scan 5 images
+Fri Jun 28 17:58:42 2024: It took 0.004999399185180664to scan 5 images
