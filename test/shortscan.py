@@ -74,10 +74,15 @@ with open(os.path.join(FILE_DIR,"log.txt"), "a") as f:
 
 # this takes the most time
 for image_name in used_images:
+    #path to image
     image_path = os.path.join(image_directory, image_name)
+    #cv2 is a package for computer vision
+    #imread loads the image (duh)
     image = cv2.imread(image_path)
 
+    #list of flakes returned by the model (probably takes the most time)
     flakes = model(image)
 
+    #
     image_overlay = visualise_flakes(flakes, image, args["min_confidence"])
     cv2.imwrite(os.path.join(OUT_DIR, image_name), image_overlay)
