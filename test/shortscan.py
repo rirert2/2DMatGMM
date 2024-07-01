@@ -13,7 +13,7 @@ from demo.demo_functions import visualise_flakes
 from GMMDetector import MaterialDetector
 
 import time
-start_time = time.time()
+
 
 # I want the args done; customizability is low priority
 def arg_parse() -> dict:
@@ -51,11 +51,15 @@ MATERIAL = args["material"]
 SIZE_THRESHOLD = args["size"]
 STD_THRESHOLD = args["std"]
 
+# loads up the contrast dictionary for whatever material we want
 with open(os.path.join(CONTRAST_PATH_ROOT, f"{MATERIAL}_GMM.json")) as f:
     contrast_dict = json.load(f)
 
+# makes a model object
 model = MaterialDetector(
+    # passes constrast_dict that we made above
     contrast_dict=contrast_dict,
+    # size threshold in pixels, 200 nm
     size_threshold=SIZE_THRESHOLD,
     standard_deviation_threshold=STD_THRESHOLD,
     used_channels="BGR",
@@ -69,8 +73,6 @@ if args["shuffel"]:
 used_images = image_names[:NUM_IMAGES]
 
 
-with open(os.path.join(FILE_DIR,"log.txt"), "a") as f:
-    f.write((time.ctime() + ": It took " + str(time.time() - start_time) + "to scan " + str(NUM_IMAGES) + " images\n"))
 
 # this takes the most time
 for image_name in used_images:
@@ -78,11 +80,17 @@ for image_name in used_images:
     image_path = os.path.join(image_directory, image_name)
     #cv2 is a package for computer vision
     #imread loads the image (duh)
+   
     image = cv2.imread(image_path)
-
-    #list of flakes returned by the model (probably takes the most time)
+    
+    #list of flakes returned by the model (doesn't take the most time? 0.05 s???)
+    start_time = time.time()
     flakes = model(image)
-
+    with open(os.path.join(FILE_DIR,"log.txt"), "a") as f:
+        f.write((time.ctime() + ": It took " + str(time.time() - start_time) + "to scan " + image_name + "\n"))
+    
+    
     #
     image_overlay = visualise_flakes(flakes, image, args["min_confidence"])
+    # saves the image
     cv2.imwrite(os.path.join(OUT_DIR, image_name), image_overlay)
