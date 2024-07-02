@@ -26,29 +26,25 @@ def arg_parse() -> dict:
     # fmt: off
     parser = argparse.ArgumentParser(description="2DMatGMM Demo")
     parser.add_argument("--out", dest="out", help="Output directory", default="output", type=str)
-    parser.add_argument("--num_image", dest="num_image", help="Number of images to process", default=10, type=int)
     parser.add_argument("--material", dest="material", help="Material to process", default="Graphene", type=str)
     parser.add_argument("--size", dest="size", help="Size threshold in pixels", default=200, type=int)
-    parser.add_argument("--std", dest="std", help="Standard deviation threshold", default=5, type=float)
     parser.add_argument("--min_confidence", dest="min_confidence", help="The Confidence threshold", default=0.5, type=float)
-    parser.add_argument("--channels", dest="channels", help="Channels to use", default="BGR", type=str)
-    parser.add_argument("--shuffel", dest="shuffel", default=True, type=bool)
     # fmt: on
     return vars(parser.parse_args())
 
 args = arg_parse()
 
 # Constants
-FILE_DIR = os.path.dirname(os.path.abspath(__file__))
-CONTRAST_PATH_ROOT = os.path.join(FILE_DIR, "..", "GMMDetector", "trained_parameters")
-DATA_DIR = os.path.join(FILE_DIR, "..", "Datasets", "GMMDetectorDatasets")
-OUT_DIR = os.path.join(FILE_DIR, args["out"])
+FILE_DIR = os.path.dirname(os.path.abspath(__file__)) # keep
+CONTRAST_PATH_ROOT = os.path.join(FILE_DIR, "..", "GMMDetector", "trained_parameters") # keep
+DATA_DIR = os.path.join(FILE_DIR, "..", "Datasets", "GMMDetectorDatasets") # redirect
+OUT_DIR = os.path.join(FILE_DIR, args["out"]) # keep? may want to make unique for every go
 os.makedirs(OUT_DIR, exist_ok=True)
 
-NUM_IMAGES = args["num_image"]
 MATERIAL = args["material"]
 SIZE_THRESHOLD = args["size"]
-STD_THRESHOLD = args["std"]
+
+# PREP PHASE
 
 # loads up the contrast dictionary for whatever material we want
 with open(os.path.join(CONTRAST_PATH_ROOT, f"{MATERIAL}_GMM.json")) as f:
@@ -57,20 +53,30 @@ with open(os.path.join(CONTRAST_PATH_ROOT, f"{MATERIAL}_GMM.json")) as f:
 # makes a model object
 model = MaterialDetector(
     # passes constrast_dict that we made above
-    contrast_dict=contrast_dict,
+    contrast_dict = contrast_dict,
     # size threshold in pixels, 200 nm
-    size_threshold=SIZE_THRESHOLD,
-    standard_deviation_threshold=STD_THRESHOLD,
+    size_threshold = SIZE_THRESHOLD,
+    # just leave std as 5
+    standard_deviation_threshold = 5,
     used_channels="BGR",
 )
+
+# store flakes in here
+flakes = []
+
+# go to top left with stage - may have to find it (?)
+# set mag level to 2.5x
+# warm up model (?) Python is weird so it may be our best bet to make sure that time is a nonissue
 
 # SCANNING PHASE
 
 # Start by scanning the chip at a low magnification level
-# Result: Stitched together image - may be sloppy but that's alright
+# Result: Stitched together image - may be sloppy but that's alright, prepped for next phase
+
+
 
 # Scans at 20x mag level, scan for flakes
-# Result: List of flakes, a way to retrieve their x&ys
+# Result: List of flakes, a way to retrieve their x&ys, prepped for next phase
 
 # adj mag level, reset to wherever it's supposed to be 
 # may have to adjust model inputs? idk tho
@@ -82,12 +88,12 @@ model = MaterialDetector(
 # Revisit flakes and take images at different magnification levels
 # Result: Images that detail where exactly the flake is
 
-# goto x,y
+# goto x,y of flake
 # take image at 2.5x (unnecessary maybe)
 # take image at 20x
 # take image at 50x
-# store
-# repeat
+# store images
+# repeat for all flakes
 
 
 # DATABASE PHASE
