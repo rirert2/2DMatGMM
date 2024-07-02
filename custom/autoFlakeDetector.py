@@ -12,7 +12,9 @@ import numpy as np
 from demo.demo_functions import visualise_flakes
 from GMMDetector import MaterialDetector
 
-# libs?
+# libs for the stage and camera?
+# may have to interop?????????? AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
 
 # Args can stay, just remember final product will have no --num_image
 
@@ -24,11 +26,14 @@ def arg_parse() -> dict:
         dict: Dictionary of arguments
     """
     # fmt: off
+    # arg for size of chips?
     parser = argparse.ArgumentParser(description="2DMatGMM Demo")
     parser.add_argument("--out", dest="out", help="Output directory", default="output", type=str)
     parser.add_argument("--material", dest="material", help="Material to process", default="Graphene", type=str)
     parser.add_argument("--size", dest="size", help="Size threshold in pixels", default=200, type=int)
     parser.add_argument("--min_confidence", dest="min_confidence", help="The Confidence threshold", default=0.5, type=float)
+    parser.add_argument("--chip_x", dest="chip_x", help="Chip's size wrt the x-axis, mm", default = 10, type = float)
+    parser.add_argument("--chip_y", dest="chip_y", help="Chip's size wrt the y-axis, mm", default = 10, type = float )
     # fmt: on
     return vars(parser.parse_args())
 
@@ -39,6 +44,8 @@ FILE_DIR = os.path.dirname(os.path.abspath(__file__)) # keep
 CONTRAST_PATH_ROOT = os.path.join(FILE_DIR, "..", "GMMDetector", "trained_parameters") # keep
 DATA_DIR = os.path.join(FILE_DIR, "..", "Datasets", "GMMDetectorDatasets") # redirect
 OUT_DIR = os.path.join(FILE_DIR, args["out"]) # keep? may want to make unique for every go
+# path for camera input
+# path for 
 os.makedirs(OUT_DIR, exist_ok=True)
 
 MATERIAL = args["material"]
