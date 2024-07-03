@@ -79,7 +79,7 @@ for image_name in used_images:
     #path to image
     image_path = os.path.join(image_directory, image_name)
     #cv2 is a package for computer vision
-    #imread loads the image (duh)
+    #imread loads the image as an array
    
     image = cv2.imread(image_path)
     

@@ -13,8 +13,7 @@ from demo.demo_functions import visualise_flakes
 from GMMDetector import MaterialDetector
 
 # libs for the stage and camera?
-# may have to interop?????????? AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-
+# may have to interop?????????? prolly not tho i'd explode if i had to
 
 # Args can stay, just remember final product will have no --num_image
 
@@ -53,6 +52,8 @@ SIZE_THRESHOLD = args["size"]
 
 # PREP PHASE
 
+# Initialize camera, 
+
 # loads up the contrast dictionary for whatever material we want
 with open(os.path.join(CONTRAST_PATH_ROOT, f"{MATERIAL}_GMM.json")) as f:
     contrast_dict = json.load(f)
@@ -72,6 +73,7 @@ model = MaterialDetector(
 flakes = []
 
 # go to top left with stage - may have to find it (?)
+# may also need to figure out how to move the got dang stage properly
 # set mag level to 2.5x
 # warm up model (?) Python is weird so it may be our best bet to make sure that time is a nonissue
 
@@ -80,7 +82,12 @@ flakes = []
 # Start by scanning the chip at a low magnification level
 # Result: Stitched together image - may be sloppy but that's alright, prepped for next phase
 
-
+# go to top left
+# take photo, store somewhere
+# move to next area
+# repeat
+# if all the way to right or left, go one down in y and then swap directions in x
+# when done, stitch together all the images and turnit back into a user-accesible image
 
 # Scans at 20x mag level, scan for flakes
 # Result: List of flakes, a way to retrieve their x&ys, prepped for next phase
@@ -89,8 +96,11 @@ flakes = []
 # may have to adjust model inputs? idk tho
 
 # go to top left
-#  
-
+# take photo, pass to model
+# store any flakes in array
+# move to next area
+# repeat
+# if all the way to right or left, go one down in yand then swap directions in x
 
 # Revisit flakes and take images at different magnification levels
 # Result: Images that detail where exactly the flake is
