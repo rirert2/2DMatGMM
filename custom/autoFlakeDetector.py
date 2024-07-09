@@ -12,6 +12,8 @@ import numpy as np
 from demo.demo_functions import visualise_flakes
 from GMMDetector import MaterialDetector
 
+from mysql.connector import Error, connect
+from getpass import getpass
 # libs for the stage and camera?
 # may have to interop?????????? prolly not tho i'd explode if i had to
 
@@ -115,12 +117,34 @@ flakes = []
 
 # DATABASE PHASE
 
-# Upload images to database
+# Upload images to database (flakes_db)
+"""
+TABLE GUIDE:
+Flake: 
+id: A unqiue integer for identifying the flake; primary key
+
+"""
+
+try:
+    with connect(
+        host="localhost",
+        user=input("Enter username: "),
+        password=getpass("Enter password: "),
+        database = "test_db",
+    ) as connection:
+        create_db_query = "CREATE DATABASE flakes_db"
+        with connection.cursor() as cursor:
+            cursor.execute(create_db_query)
+except Error as e:
+    print(e)
+
 # Maybe make a website to host images?
 
 # Database must be able to store the set amount of images and the location of the flake, aswell as the flake object itself
 # Maybe make a parent class to Flake called FlakeEX that bundles everything together
-# So, DB just holds onto FlakeEX that has everything above 
+# So, DB just holds onto FlakeEX that has everything above.
+# A schema would be just fine because there's no need to have the flexibility of different possible flakes.
+# Conclusion: Use MySQL
 
 # If no database, alternative way to view a map of flakes?
 
