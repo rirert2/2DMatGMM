@@ -8,14 +8,14 @@ class Flake:
 
     def __init__(
         self,
-        mask: np.ndarray,
-        thickness: str,
-        size: int,
+        mask: np.ndarray, # Want to take to DB, but idk
+        thickness: str, # Take to DB
+        size: int, # Take to DB
         mean_contrast: np.ndarray,
-        center: tuple,
+        center: tuple, # Take to DB in some form
         max_sidelength: int,
-        min_sidelength: int,
-        false_positive_probability: float = 0,
+        min_sidelength: int, 
+        false_positive_probability: float = 0, # Take to DB 
         entropy: float = -1,
     ):
         """
