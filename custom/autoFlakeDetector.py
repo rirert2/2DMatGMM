@@ -52,7 +52,7 @@ SIZE_THRESHOLD = args["size"]
 
 # PREP PHASE
 
-# Initialize camera, 
+# Initialize camera, stage, etc. as necessary
 
 # loads up the contrast dictionary for whatever material we want
 with open(os.path.join(CONTRAST_PATH_ROOT, f"{MATERIAL}_GMM.json")) as f:
@@ -118,4 +118,12 @@ flakes = []
 # Upload images to database
 # Maybe make a website to host images?
 
+# Database must be able to store the set amount of images and the location of the flake, aswell as the flake object itself
+# Maybe make a parent class to Flake called FlakeEX that bundles everything together
+# So, DB just holds onto FlakeEX that has everything above 
+
 # If no database, alternative way to view a map of flakes?
+
+# Seperate development path: A webapp to view the data from all of them?
+# Would need a server for both the database and the webapp anyways. Need to see if I can get a donor laptop 
+# for everything so I don't have to pack all this up + server + webapp and get it out to the team
