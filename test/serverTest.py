@@ -34,6 +34,10 @@ try:
         password=getpass("Enter password: "),
         database = "test_db",
     ) as connection:
-        print(connection)
+        with connection.cursor() as cursor:
+            cursor.execute("DESCRIBE movies")
+            result = cursor.fetchall()
+            for row in result: 
+                print(row)
 except Error as e:
     print(e)

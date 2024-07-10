@@ -116,13 +116,28 @@ flakes = []
 
 
 # DATABASE PHASE
-
-# Upload images to database (flakes_db)
 """
 TABLE GUIDE:
-Flake: 
-id: A unqiue integer for identifying the flake; primary key
 
+Chip:
+PRIMARY KEY Chip_id: A unique integer for identifying the chip
+Size: Size of the chip, centimeters squared
+
+
+Flake: 
+Flake_id: Int, for identifying the flake: one ID per chip but not unqiue, so different flakes on different chips may have the same flake_id
+FOREIGN Chip_id: Int, identifies which chip the flake is on
+PRIMARY KEY [Chip_id, Flake_id]: Combo that identifies the particular flake on a particular chip
+
+Material: Str, Name of the material of the flake (Graphene or WSe2)
+Thickness: Str, The name of the layer the flake is from (TAKEN FROM FLAKE CLASS)
+Size: Size of the flake, micrometers squared (TAKEN FROM FLAKE CLASS)
+Center: Tuple, identifies in x,y where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS)
+Confidence: Float, confidence that the flake is correctly identified (DERIVEN FROM FLAKE CLASS)
+
+LowMag: Str, Filepath to a 2.5x magnification image of the flake
+MedMag: Str, Filepath to a 20x magnification image of the flake 
+HighMag: Str, Filepath to a 50x magnification image of the flake
 """
 
 try:
