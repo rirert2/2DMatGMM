@@ -11,6 +11,7 @@ import numpy as np
 
 from demo.demo_functions import visualise_flakes
 from GMMDetector import MaterialDetector
+from GMMDetector.structures import Flake 
 
 import time
 
@@ -26,6 +27,32 @@ Inform the database if any changes are made to a table.
 Close the connection to the MySQL server.
 """
 
+#from a array containing falkes, I can strip things
+# this is not implemented here shrimply because i leave in 5
+
+
+"""
+tables: chip & flake, as described elsewhere
+"""
+insert_chip_query = """
+INSERT INTO chips (material, size)
+VALUES 
+    ('Graphene','25'),
+    ('Graphene','10'),
+    ('Graphene','3'),
+    ('Graphene','2')
+;
+"""
+insert_flake_query = """
+INSERT INTO flakes (material, size)
+VALUES 
+    ('Graphene','25'),
+    ('Graphene','10'),
+    ('Graphene','3'),
+    ('Graphene','2')
+;
+"""
+
 
 try:
     with connect(
@@ -35,9 +62,7 @@ try:
         database = "test_db",
     ) as connection:
         with connection.cursor() as cursor:
-            cursor.execute("DESCRIBE movies")
-            result = cursor.fetchall()
-            for row in result: 
-                print(row)
+            cursor.execute(insert_chip_query)
+            connection.commit()
 except Error as e:
     print(e)
