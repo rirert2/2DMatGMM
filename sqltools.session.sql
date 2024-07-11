@@ -13,16 +13,18 @@ VALUES (
 );
 
 -- @block
-INSERT INTO chips (material, size)
-VALUES (
-    'Wse2',
-    '2'
-);
+INSERT INTO chips (material, size) -- works as is
+VALUES 
+    ('Graphene','25'),
+    ('Graphene','10'),
+    ('Graphene','3'),
+    ('Graphene','2')
+;
 
 -- @block 
 SELECT * FROM flakes
 
-WHERE chip_id = 2
+WHERE size > 400
 
 ORDER BY chip_id asc;
 
@@ -34,9 +36,10 @@ CREATE TABLE Flakes(
     chip_id INT NOT NULL, -- prefer it this way so it can be read as (1,2)
     flake_id INT,
     FOREIGN KEY (chip_id) REFERENCES Chips(chip_id),
-    PRIMARY KEY (chip_id, flake_id)
+    PRIMARY KEY (chip_id, flake_id),
+    size INT
 ); 
 -- Note that the flake_id WILL NOT AUTO INCREMENT
 
 -- @block
-DROP TABLE chips;
+DROP TABLE flakes;

@@ -44,15 +44,19 @@ VALUES
 ;
 """
 insert_flake_query = """
-INSERT INTO flakes (material, size)
+INSERT INTO flakes (chip_id, flake_id, size)
 VALUES 
-    ('Graphene','25'),
-    ('Graphene','10'),
-    ('Graphene','3'),
-    ('Graphene','2')
-;
+    (%s,%s,%s)
 """
-
+chip_id = 2
+flakeSizeList = [200,300,123,491,2390]
+flakes = []
+flake_id = 1
+for fs in flakeSizeList:
+    flakes.append(
+        (chip_id, flake_id, fs)
+    )
+    flake_id = flake_id + 1
 
 try:
     with connect(
@@ -62,7 +66,7 @@ try:
         database = "test_db",
     ) as connection:
         with connection.cursor() as cursor:
-            cursor.execute(insert_chip_query)
+            cursor.executemany(insert_flake_query, flakes)
             connection.commit()
 except Error as e:
     print(e)
