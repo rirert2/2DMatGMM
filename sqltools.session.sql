@@ -2,7 +2,8 @@
 CREATE TABLE Chips(
     chip_id INT PRIMARY KEY AUTO_INCREMENT,
     material VARCHAR(255) NOT NULL,
-    size INT NOT NULL -- mm squared
+    size INT NOT NULL,
+    img VARCHAR(255) 
 );
 
 -- @block
@@ -37,7 +38,14 @@ CREATE TABLE Flakes(
     flake_id INT,
     FOREIGN KEY (chip_id) REFERENCES Chips(chip_id),
     PRIMARY KEY (chip_id, flake_id),
-    size INT
+    thickness VARCHAR(2),
+    size INT,
+    center_x INT,
+    center_y INT,
+    confidence FLOAT,
+    low_mag VARCHAR(255),
+    med_mag VARCHAR(255),
+    high_mag VARCHAR(255)
 ); 
 -- Note that the flake_id WILL NOT AUTO INCREMENT
 

@@ -29,7 +29,6 @@ def arg_parse() -> dict:
     # fmt: off
     # arg for size of chips?
     parser = argparse.ArgumentParser(description="2DMatGMM Demo")
-    parser.add_argument("--out", dest="out", help="Output directory", default="output", type=str)
     parser.add_argument("--material", dest="material", help="Material to process", default="Graphene", type=str)
     parser.add_argument("--size", dest="size", help="Size threshold in pixels", default=200, type=int)
     parser.add_argument("--min_confidence", dest="min_confidence", help="The Confidence threshold", default=0.5, type=float)
@@ -134,7 +133,8 @@ PRIMARY KEY [Chip_id, Flake_id]: Combo that identifies the particular flake on a
 
 Thickness: Str, The name of the layer the flake is from (TAKEN FROM FLAKE CLASS)
 Size: Int, Size of the flake, micrometers squared (TAKEN FROM FLAKE CLASS)
-Center: Tuple, identifies in x,y where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS)
+Center_x: Int, identifies in x where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS)
+Center_y: INt, identifies in y where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS)
 Confidence: Float, confidence that the flake is correctly identified (DERIVEN FROM FLAKE CLASS)
 
 LowMag: Str, Filepath to a 2.5x magnification image of the flake
