@@ -126,9 +126,9 @@ Image: Str, Filepath to a decent-resolution image of the entire chip
 
 
 Flake: 
+FOREIGN Chip_id: Int, identifies which chip the flake is on, reference from Chip
 Flake_id: Int, for identifying the flake: one ID per chip but not unqiue, so different flakes on different chips may have the same flake_id
     ^ don't forget to increment in code
-FOREIGN Chip_id: Int, identifies which chip the flake is on, reference from Chip
 PRIMARY KEY [Chip_id, Flake_id]: Combo that identifies the particular flake on a particular chip
 
 Thickness: Str, The name of the layer the flake is from (TAKEN FROM FLAKE CLASS)
@@ -167,17 +167,72 @@ Chips that have been discarded can have their directory under Output as well as
 
 
 """
+# insert chip into db
+c_id = 0
+try:
+    with connect(
+        host="localhost",
+        user=input("Enter username: "),
+        password=getpass("Enter password: "),
+        database = "2dmat_db",
+    ) as connection:
+        # defining querys now so we don't have to later
+        insert_chip_query = """
+        INSERT INTO chips (material, size)
+        VALUES 
+            (%s,%d)
+        """(args["material"], args["size"])
+        get_chip_id_query = """
+        SELECT chip_id FROM chips
+            ORDER BY chip_id desc
+            LIMIT 1
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(insert_chip_query)
+            cursor.commit()
+            cursor.execute(get_chip_id_query)
+            c_id = cursor.fetchall()[0][0]
+except Error as e:
+    print(e)
+
+
+# assume flakes has been filled out and 2dmat_db is set up
+# we first need to organize flakes array so that it's readable by executemany
+dbReadyFlakes = []
+f_id = 1
+for flake in flakes:
+    dbReadyFlakes.append(
+        (
+            c_id, f_id, flake["thickness"], 
+
+
+        )
+    )
+    f_id = f_id + 1
 
 try:
     with connect(
         host="localhost",
         user=input("Enter username: "),
         password=getpass("Enter password: "),
-        database = "test_db",
+        database = "2dmat_db",
     ) as connection:
-        create_db_query = "CREATE DATABASE flakes_db"
+        # defining querys now so we don't have to later
+        insert_chip_query = """
+        INSERT INTO chips (material, size) -- works as is
+        VALUES 
+            (%s,%d)
+        """(args["material"], args["size"])
+
+        insert_flake_query = """
+        INSERT INTO flakes (chip_id, flake_id, size)
+        VALUES 
+            (%s,%s,%s)
+        """
+        
+        # first we must create a chip in the db
         with connection.cursor() as cursor:
-            cursor.execute(create_db_query)
+            cursor.execute()
 except Error as e:
     print(e)
 
