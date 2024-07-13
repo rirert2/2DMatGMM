@@ -203,9 +203,7 @@ f_id = 1
 for flake in flakes:
     dbReadyFlakes.append(
         (
-            c_id, f_id, flake["thickness"], 
-
-
+            c_id, f_id, flake["thickness"], flake["size"], centerx, centery, conf, lowM,medM,highM
         )
     )
     f_id = f_id + 1
