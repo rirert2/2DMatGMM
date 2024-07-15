@@ -127,6 +127,7 @@ os.makedirs(CHIP_DIR)
 # store flake objects in here; some info will be dumped due to the flake schema of the db + relevance to user
 flakes = []
 # store x n y info in here; well-ordered list so index of above and below line up
+# the choice to do this rather than update the flake class is due to the fact that i don't want to mess with the internals of the classes that the model might be looking at.
 flakeXYList = []
 
 # go to top left with stage - may have to find it (?)
@@ -189,8 +190,8 @@ PRIMARY KEY [Chip_id, Flake_id]: Combo that identifies the particular flake on a
 
 Thickness: Str, The name of the layer the flake is from (TAKEN FROM FLAKE CLASS)
 Size: Int, Size of the flake, micrometers squared (TAKEN FROM FLAKE CLASS)
-Center_x: Int, identifies in x where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS)
-Center_y: INt, identifies in y where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS)
+Center_x: Int, identifies in x where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS) ! FIGURE DATATYPE!
+Center_y: INt, identifies in y where to move the stage to center the flake (DERIVEN FROM FLAKE CLASS) ! FIGURE DATATYPE!
 Confidence: Float, confidence that the flake is correctly identified (DERIVEN FROM FLAKE CLASS)
 
 LowMag: Str, Filepath to a 2.5x magnification image of the flake
@@ -252,7 +253,7 @@ try:
         insert_flake_query = """
         INSERT INTO flakes (chip_id, flake_id, thickness, size, center_x, center_y, confidence, low_mag, med_mag, high_mag)
         VALUES 
-            (%s,%s,%s, %d, %f, %f, %f, %s, %s, %s)
+            (%s,%s,%s, %d, %d, %d, %f, %s, %s, %s)
         """
         
         # we made chip at the start so we can just throw our flakes in now
