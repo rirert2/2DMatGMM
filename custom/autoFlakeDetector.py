@@ -21,7 +21,7 @@ from getpass import getpass
 
 def arg_parse() -> dict:
     """
-    Parse arguments to the detect module
+    Parse arguments
 
     Returns:
         dict: Dictionary of arguments
@@ -38,6 +38,26 @@ def arg_parse() -> dict:
     return vars(parser.parse_args())
 
 args = arg_parse()
+
+# Note that any and all references to a x,y coordinate system are in millimeters, with the top left of the chip being (0,0)
+
+def getTopLeftXY() -> tuple:
+    """
+    Gets the coordinates of the top left of whatever section of the chip the camera is looking at
+
+    Returns:
+        tuple: Tuple of the x,y coordinate of the top left pixel of the section, relative to global top left.
+    """
+    pass
+
+def getFlakeCenterXY(flake) -> tuple:
+    """
+    Gets the coordinates of a flake of interest.
+
+
+    """
+    TL_XY = getTopLeftXY()
+    pass
 
 # Constants
 FILE_DIR = os.path.dirname(os.path.abspath(__file__)) # keep
@@ -70,11 +90,44 @@ model = MaterialDetector(
     used_channels="BGR",
 )
 
-# store flakes in here
+# insert chip into db
+c_id = 0
+try:
+    with connect(
+        host="localhost",
+        user=input("Enter username: "),
+        password=getpass("Enter password: "),
+        database = "2dmat_db",
+    ) as connection:
+        # defining querys now so we don't have to later
+        insert_chip_query = """
+        INSERT INTO chips (material, size)
+        VALUES 
+            (%s,%d)
+        """(args["material"], args["size"])
+        get_chip_id_query = """
+        SELECT chip_id FROM chips
+            ORDER BY chip_id desc
+            LIMIT 1
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(insert_chip_query)
+            cursor.commit()
+            cursor.execute(get_chip_id_query)
+            c_id = cursor.fetchall()[0][0]
+except Error as e:
+    print(e)
+
+# create proper-looking file directory in the same directory as this file; see DB notes below
+
+with open(os.path.join(FILE_DIR,"log.txt"), "a") as f:
+    pass
+
+# store flake objects in here; some info will be dumped due to the flake schema of the db + relevance to user
 flakes = []
 
 # go to top left with stage - may have to find it (?)
-# may also need to figure out how to move the got dang stage properly
+# may also need to figure out how to move the stage properly
 # set mag level to 2.5x
 # warm up model (?) Python is weird so it may be our best bet to make sure that time is a nonissue
 
@@ -167,33 +220,7 @@ Chips that have been discarded can have their directory under Output as well as
 
 
 """
-# insert chip into db
-c_id = 0
-try:
-    with connect(
-        host="localhost",
-        user=input("Enter username: "),
-        password=getpass("Enter password: "),
-        database = "2dmat_db",
-    ) as connection:
-        # defining querys now so we don't have to later
-        insert_chip_query = """
-        INSERT INTO chips (material, size)
-        VALUES 
-            (%s,%d)
-        """(args["material"], args["size"])
-        get_chip_id_query = """
-        SELECT chip_id FROM chips
-            ORDER BY chip_id desc
-            LIMIT 1
-        """
-        with connection.cursor() as cursor:
-            cursor.execute(insert_chip_query)
-            cursor.commit()
-            cursor.execute(get_chip_id_query)
-            c_id = cursor.fetchall()[0][0]
-except Error as e:
-    print(e)
+
 
 
 # assume flakes has been filled out and 2dmat_db is set up
