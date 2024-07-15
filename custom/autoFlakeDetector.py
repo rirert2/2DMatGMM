@@ -120,11 +120,14 @@ except Error as e:
 
 # create proper-looking file directory in the same directory as this file; see DB notes below
 
-with open(os.path.join(FILE_DIR,"log.txt"), "a") as f:
-    pass
+CHIP_DIR = os.path.join(FILE_DIR, str(c_id))
+
+os.makedirs(CHIP_DIR)
 
 # store flake objects in here; some info will be dumped due to the flake schema of the db + relevance to user
 flakes = []
+# store x n y info in here; well-ordered list so index of above and below line up
+flakeXYList = []
 
 # go to top left with stage - may have to find it (?)
 # may also need to figure out how to move the stage properly
@@ -225,14 +228,17 @@ Chips that have been discarded can have their directory under Output as well as
 
 # assume flakes has been filled out and 2dmat_db is set up
 # we first need to organize flakes array so that it's readable by executemany
+# while doing this we'll also make dirs for each flake
 dbReadyFlakes = []
-f_id = 1
+f_id = 0
+# note that flakes list and flakeXYList are well-ordered so their indexes line up, so we can use f_id - 1 to fish out the right one
 for flake in flakes:
     dbReadyFlakes.append(
         (
-            c_id, f_id, flake["thickness"], flake["size"], centerx, centery, conf, lowM,medM,highM
+            c_id, f_id, flake["thickness"], flake["size"], flakeXYList[f_id][0], flakeXYList[f_id][1], conf, lowM,medM,highM
         )
     )
+
     f_id = f_id + 1
 
 try:
@@ -243,21 +249,15 @@ try:
         database = "2dmat_db",
     ) as connection:
         # defining querys now so we don't have to later
-        insert_chip_query = """
-        INSERT INTO chips (material, size) -- works as is
-        VALUES 
-            (%s,%d)
-        """(args["material"], args["size"])
-
         insert_flake_query = """
-        INSERT INTO flakes (chip_id, flake_id, size)
+        INSERT INTO flakes (chip_id, flake_id, thickness, size, center_x, center_y, confidence, low_mag, med_mag, high_mag)
         VALUES 
-            (%s,%s,%s)
+            (%s,%s,%s, %d, %f, %f, %f, %s, %s, %s)
         """
         
-        # first we must create a chip in the db
+        # we made chip at the start so we can just throw our flakes in now
         with connection.cursor() as cursor:
-            cursor.execute()
+            cursor.executemany(insert_flake_query, dbReadyFlakes)
 except Error as e:
     print(e)
 
