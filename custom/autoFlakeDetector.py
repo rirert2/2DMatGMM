@@ -154,12 +154,6 @@ flakeXYList = []
 # Scans at 20x mag level, scan for flakes
 # Result: List of flakes, a way to retrieve their x&ys, prepped for next phase
 
-# make all the directories necessary
-
-for i,flake in enumerate(flakes):
-    FLAKE_ID = str(i)
-    os.makedirs(os.path.join(CHIP_DIR,FLAKE_ID))
-
 # adj mag level, reset to wherever it's supposed to be 
 # may have to adjust model inputs? idk tho
 
@@ -187,8 +181,14 @@ if flakesOnImg.size > 0:
 # Result: Images that detail where exactly the flake is
 
 # now, we have a list of where each flake is as well as the flake object proper
-# 
 
+# first make all the directories necessary
+
+for i,flake in enumerate(flakes):
+    FLAKE_ID = str(i)
+    os.makedirs(os.path.join(CHIP_DIR,FLAKE_ID))
+
+# now for the actual scan 
 for flake,coord in zip(flakes, flakeXYList):
     # goto x,y of flake
     # take image at 2.5x
@@ -252,20 +252,20 @@ Chips that have been discarded can have their directory under Output as well as
 
 """
 
-
-
 # assume flakes has been filled out and 2dmat_db is set up
 # we first need to organize flakes array so that it's readable by executemany
 # while doing this we'll also make dirs for each flake
 dbReadyFlakes = []
 f_id = 0
 # note that flakes list and flakeXYList are well-ordered so their indexes line up, so we can use f_id - 1 to fish out the right one
-for flake in flakes:
+for flake, coord in zip(flakes,flakeXYList):
     conf = 1 - flake["false_positive_probability"]
     dbReadyFlakes.append(
         (
-            c_id, f_id, flake["thickness"], flake["size"], flakeXYList[f_id][0], flakeXYList[f_id][1], conf, lowM,medM,highM
+            c_id, f_id, flake["thickness"], flake["size"], coord[0], coord[1], conf, lowM,medM,highM
         )
+        # above appends (chip id, flake id, flake thickness, flake size, flake x coord, flake y coord, 
+        #   flake confidence, lowmag filepath, medmag filepath, highmag filepath)
     )
 
     f_id = f_id + 1
