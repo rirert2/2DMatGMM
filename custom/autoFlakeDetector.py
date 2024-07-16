@@ -126,7 +126,6 @@ except Error as e:
 # create proper-looking file directory in the same directory as this file; see DB notes below
 
 CHIP_DIR = os.path.join(FILE_DIR, str(c_id))
-
 os.makedirs(CHIP_DIR)
 
 # store flake objects in here; some info will be dumped due to the flake schema of the db + relevance to user
@@ -155,26 +154,49 @@ flakeXYList = []
 # Scans at 20x mag level, scan for flakes
 # Result: List of flakes, a way to retrieve their x&ys, prepped for next phase
 
+# make all the directories necessary
+
+for i,flake in enumerate(flakes):
+    FLAKE_ID = str(i)
+    os.makedirs(os.path.join(CHIP_DIR,FLAKE_ID))
+
 # adj mag level, reset to wherever it's supposed to be 
 # may have to adjust model inputs? idk tho
 
 # go to top left
+
 # take photo, pass to model
-# store any flakes in array
+# note that this photo is not saved anywhere just yet
+img_path = "" # fill in from camera here
+image = cv2.imread(img_path)
+flakesOnImg = model(image)
+
+# awesome, now are there flakes in this image? if so, we're gonna take info about them and
+# put it in the proper list 
+if flakesOnImg.size > 0:
+    for flake in flakesOnImg:
+        flakeXYList.append(getFlakeCenterXY)
+        flakes.append(flake)
+
 # move to next area
 # repeat
 # if all the way to right or left, go one down in yand then swap directions in x
 
+
 # Revisit flakes and take images at different magnification levels
 # Result: Images that detail where exactly the flake is
 
-# goto x,y of flake
-# take image at 2.5x (unnecessary maybe)
-# take image at 20x
-# take image at 50x
-# store images
-# repeat for all flakes
+# now, we have a list of where each flake is as well as the flake object proper
+# 
 
+for flake,coord in zip(flakes, flakeXYList):
+    # goto x,y of flake
+    # take image at 2.5x
+    # take image at 20x
+    # take image at 50x
+    # store images
+
+    pass
 
 # DATABASE PHASE
 """
