@@ -54,10 +54,15 @@ def getFlakeCenterXY(flake) -> tuple:
     """
     Gets the coordinates of a flake of interest.
 
-
+    Returns:
+        tuple: Tuple of the x,y coordinate of the center pixel of the flake, relative to global top left.
     """
     TL_XY = getTopLeftXY()
-    pass
+    # below is Flake class's native center attrb, measured in pixels, at 20x mag
+    local_center = flake["center"]
+    # insert conversion from pixels to whatever the x,y units are
+    
+    return (TL_XY[0] + 0, TL_XY[1] + 0) 
 
 # Constants
 FILE_DIR = os.path.dirname(os.path.abspath(__file__)) # keep
@@ -234,6 +239,7 @@ dbReadyFlakes = []
 f_id = 0
 # note that flakes list and flakeXYList are well-ordered so their indexes line up, so we can use f_id - 1 to fish out the right one
 for flake in flakes:
+    conf = 1 - flake["false_positive_probability"]
     dbReadyFlakes.append(
         (
             c_id, f_id, flake["thickness"], flake["size"], flakeXYList[f_id][0], flakeXYList[f_id][1], conf, lowM,medM,highM
