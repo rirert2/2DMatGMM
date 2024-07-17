@@ -1,6 +1,7 @@
 """
 Author: Patrick Kaczmarek
 Code that automates flake detection via microscope.
+This program should always be run in the 2DMatGMM venv
 """
 import argparse
 import json
@@ -60,8 +61,8 @@ def getFlakeCenterXY(flake) -> tuple:
     TL_XY = getTopLeftXY()
     # below is Flake class's native center attrb, measured in pixels, at 20x mag
     local_center = flake["center"]
-    # insert conversion from pixels to whatever the x,y units are
     
+    # insert conversion from pixels to whatever the x,y units are
     return (TL_XY[0] + 0, TL_XY[1] + 0) 
 
 # Constants
@@ -169,7 +170,7 @@ flakesOnImg = model(image)
 # put it in the proper list 
 if flakesOnImg.size > 0:
     for flake in flakesOnImg:
-        flakeXYList.append(getFlakeCenterXY)
+        flakeXYList.append(getFlakeCenterXY(flake))
         flakes.append(flake)
 
 # move to next area
